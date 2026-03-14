@@ -1,0 +1,44 @@
+{
+  "entities": {
+    "Income": {
+      "title": "Income",
+      "description": "Represents a single income entry from a client.",
+      "type": "object",
+      "properties": {
+        "client": {
+          "type": "string",
+          "description": "The name of the client or company."
+        },
+        "amount": {
+          "type": "number",
+          "description": "The amount of income."
+        },
+        "date": {
+          "type": "string",
+          "format": "date-time",
+          "description": "The date the income was earned or expected."
+        },
+        "status": {
+          "type": "string",
+          "enum": ["pending", "paid"],
+          "description": "The payment status of the income."
+        },
+        "memo": {
+          "type": "string",
+          "description": "Additional notes about the income."
+        },
+        "userId": {
+          "type": "string",
+          "description": "The UID of the user who owns this record."
+        }
+      },
+      "required": ["client", "amount", "date", "status", "userId"]
+    }
+  },
+  "firestore": {
+    "incomes": {
+      "schema": "Income",
+      "description": "A collection of income records for freelancers."
+    }
+  }
+}

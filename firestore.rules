@@ -1,0 +1,48 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // ===============================================================
+    // Assumed Data Model
+    // ===============================================================
+    //
+    // Collection: incomes
+    // Fields:
+    //   - client: string (required, 1-100 chars)
+    //   - amount: number (required, positive)
+    //   - date: timestamp (required)
+    //   - status: string (required, 'pending' or 'paid')
+    //   - memo: string (optional, max 500 chars)
+    //   - userId: string (required, matches auth.uid)
+    //
+    // ===============================================================
+
+    // Helper Functions
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    function isValidIncome(data) {
+      return data.client is string && data.client.size() > 0 && data.client.size() <= 100 &&
+             data.amount is number && data.amount >= 0 &&
+             data.date is timestamp &&
+             data.status in ['pending', 'paid'] &&
+             (!('memo' in data) || (data.memo is string && data.memo.size() <= 500)) &&
+             data.userId == request.auth.uid;
+    }
+
+    match /incomes/{incomeId} {
+      allow read: if isAuthenticated() && resource.data.userId == request.auth.uid;
+      allow create: if isAuthenticated() && isValidIncome(request.resource.data);
+      allow update: if isAuthenticated() && isOwner(resource.data.userId) && isValidIncome(request.resource.data);
+      allow delete: if isAuthenticated() && isOwner(resource.data.userId);
+    }
+
+    match /users/{userId} {
+      allow read, write: if isOwner(userId);
+    }
+  }
+}
