@@ -13,6 +13,7 @@ const firebaseConfig = {
   firestoreDatabaseId: env.VITE_FIREBASE_FIRESTORE_DATABASE_ID,
   storageBucket: env.VITE_FIREBASE_STORAGE_BUCKET,
   messagingSenderId: env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+  measurementId: env.VITE_FIREBASE_MEASUREMENT_ID,
 };
 
 // Firebase 초기화 (중복 초기화 방지)
