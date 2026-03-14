@@ -176,8 +176,9 @@ export default function App() {
     const provider = new GoogleAuthProvider();
     try {
       await signInWithPopup(auth, provider);
-    } catch (error) {
+    } catch (error: any) {
       console.error("Login failed", error);
+      alert(`로그인에 실패했습니다: ${error.message}\n\n도움말: 브라우저의 팝업 차단 설정을 확인하거나, Firebase 콘솔에서 현재 도메인이 '승인된 도메인'에 추가되었는지 확인해주세요.`);
     }
   };
 

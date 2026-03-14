@@ -1,7 +1,7 @@
-import React, { Component, ErrorInfo, ReactNode } from 'react';
+import * as React from 'react';
 
 interface Props {
-  children: ReactNode;
+  children: React.ReactNode;
 }
 
 interface State {
@@ -9,22 +9,27 @@ interface State {
   error: Error | null;
 }
 
-export default class ErrorBoundary extends Component<Props, State> {
-  state: State = {
-    hasError: false,
-    error: null
-  };
+export default class ErrorBoundary extends React.Component<Props, State> {
+  constructor(props: Props) {
+    super(props);
+    (this as any).state = {
+      hasError: false,
+      error: null
+    };
+  }
 
   public static getDerivedStateFromError(error: Error): State {
     return { hasError: true, error };
   }
 
-  public componentDidCatch(error: Error, errorInfo: ErrorInfo) {
+  public componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
     console.error('Uncaught error:', error, errorInfo);
   }
 
   public render() {
-    const { hasError, error } = this.state;
+    const { hasError, error } = (this as any).state;
+    const { children } = (this as any).props;
+
     if (hasError) {
       let errorMessage = '알 수 없는 오류가 발생했습니다.';
       
@@ -57,6 +62,6 @@ export default class ErrorBoundary extends Component<Props, State> {
       );
     }
 
-    return this.props.children;
+    return children;
   }
 }
